@@ -1,0 +1,39 @@
+Para filtrar registros en una window function. Esto te brinda la posibilidad de obtener subconjuntos de datos específicos basados en criterios más complejos.
+
+
+QUALIFY Row_Number() OVER
+(PARTITION BY
+ID_CLIENTE
+ORDER BY
+FECHA,
+CANTIDAD_PRODUCTOS
+) = 1; 
+
+Esto puede ayudar a sustituir tener que crear una CTE por separado o un subquery:
+
+WITH cte as (
+SELECT 
+	order_id, 
+	customer_id,
+	product_id, 
+	sale_date,
+	sale_amount,
+	ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY    sale_date DES) = 1 as row_num
+FROM sales_data
+)
+
+SELECT *
+FROM cte
+WHERE row_num = 1
+
+– NEW, QUALIFY WAY:
+SELECT
+order_id,
+customer_id,
+product_id
+sale_date.
+sale_amount,
+FROM sales_data
+QUALIFY ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY sale_date DESC)=1
+
+
